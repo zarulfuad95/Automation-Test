@@ -17,18 +17,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Run Katalon Tests using Docker
-        shell: bash
         env:
-            KATALON_API_KEY: ${{ secrets.KATALON_API_KEY }}
+          KATALON_API_KEY: ${{ secrets.KATALON_API_KEY }}
         run: |
-          docker run --rm -v "$PWD:/katalon/katalon/source:rw" \
-            katalonstudio/katalon \
-            katalonc -noSplash -runMode=console \
-            -projectPath="/katalon/katalon/source/Automation-Test.prj" \
-            -retry=0 \
-            -testSuitePath="Test Suites/BCO end to end" \
-            -browserType="Chrome" \
-            -executionProfile="default" \
-            -apiKey="$KATALON_API_KEY" \
-            --config -webui.autoUpdateDrivers=true
-
+          docker run --rm -v "${{ github.workspace }}:/katalon/katalon/source:rw" katalonstudio/katalon katalonc -noSplash -runMode=console -projectPath="/katalon/katalon/source/Automation-Test.prj" -retry=0 -testSuitePath="Test Suites/BCO end to end" -browserType="Chrome" -executionProfile="default" -apiKey="${{ secrets.KATALON_API_KEY }}" --config -webui.autoUpdateDrivers=true
