@@ -1,0 +1,42 @@
+name: Katalon BCO End-to-End Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  katalon-bco-e2e:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Docker
+        uses: docker/setup-buildx-action@v3
+
+      - name: Run Katalon BCO End-to-End Test
+        run: |
+          docker run --rm -t \
+            -v "${{ github.workspace }}:/katalon/project" \
+            katalonstudio/katalon \
+            katalonc -noSplash -runMode=console \
+            -projectPath="/katalon/project/Automation-Test.prj" \
+            -retry=0 \
+            -testSuitePath="Test Suites/BCO end to end" \
+            -browserType="Chrome (headless)" \
+            -executionProfile="default" \
+            -apiKey="${{ secrets.KATALON_API_KEY }}" \
+            --config -webui.autoUpdateDrivers=true \
+            -Dchrome.args="--no-sandbox,--disable-dev-shm-usage,--user-data-dir=/tmp/katalon-$RANDOM"
+
+      - name: Upload Katalon Reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: katalon-bco-reports
+          path: ${{ github.workspace }}/Reports
