@@ -31,14 +31,3 @@ jobs:
         run: |
           chmod +x ./katalon-execute.sh
           ./katalon-execute.sh
-#!/bin/bash
-set -e
-
-# Run Katalon test suite from CLI
-./path/to/katalon -noSplash -runMode=console \
-    -projectPath="/path/to/Automation-Test.prj" \
-    -retry=0 \
-    -testSuitePath="Test Suites/YourTestSuite" \
-    -browserType="Chrome" \
-    -executionProfile="default" \
-    --config -webui.autoUpdateDrivers=true
