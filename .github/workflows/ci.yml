@@ -1,0 +1,44 @@
+name: Katalon Automation CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  katalon-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install Katalon dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb libgconf-2-4
+
+      - name: Run Katalon tests
+        run: |
+          chmod +x ./katalon-execute.sh
+          ./katalon-execute.sh
+#!/bin/bash
+set -e
+
+# Run Katalon test suite from CLI
+./path/to/katalon -noSplash -runMode=console \
+    -projectPath="/path/to/Automation-Test.prj" \
+    -retry=0 \
+    -testSuitePath="Test Suites/YourTestSuite" \
+    -browserType="Chrome" \
+    -executionProfile="default" \
+    --config -webui.autoUpdateDrivers=true
